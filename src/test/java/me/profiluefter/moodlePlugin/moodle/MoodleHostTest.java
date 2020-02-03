@@ -1,15 +1,13 @@
 package me.profiluefter.moodlePlugin.moodle;
 
-import me.profiluefter.moodlePlugin.data.moodle.MoodleToken;
-import org.junit.BeforeClass;
+import me.profiluefter.moodlePlugin.moodle.data.MoodleToken;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Objects;
-import java.util.Properties;
+
 import static me.profiluefter.moodlePlugin.moodle.SecretTestProperties.secrets;
 
 public class MoodleHostTest {
@@ -36,7 +34,5 @@ public class MoodleHostTest {
 		Moodle moodle = host.connect(token);
 
 		assertNotNull(moodle);
-		moodle.refresh();
-		assertTrue(moodle.isConnected());
 	}
 }

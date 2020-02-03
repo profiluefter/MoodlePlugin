@@ -1,4 +1,4 @@
-package me.profiluefter.moodlePlugin.data.moodle;
+package me.profiluefter.moodlePlugin.moodle.data;
 
 public class MoodleToken {
 	private final String token;
