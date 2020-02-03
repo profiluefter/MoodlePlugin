@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id "org.jetbrains.intellij" version "0.4.16"
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20190722'
+    testImplementation 'junit:junit:4.12'
+}
+
+intellij {
+    localPath project.properties['intellij.localPath']
+}

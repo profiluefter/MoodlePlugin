@@ -1,6 +1,8 @@
 package me.profiluefter.moodlePlugin.moodle;
 
 import me.profiluefter.moodlePlugin.data.moodle.MoodleToken;
+import org.json.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,8 +31,10 @@ public class MoodleHost {
 		URLConnection connection = loginEndpoint.toURL().openConnection();
 		connection.connect();
 		String response = new BufferedReader(new InputStreamReader(connection.getInputStream())).lines().collect(Collectors.joining("\n"));
-		System.out.println(response);
-		return null;
+
+		String token = new JSONObject(response).getString("token");
+
+		return new MoodleToken(token);
 	}
 
 	public Moodle connect(MoodleToken token) {

@@ -1,4 +1,7 @@
-.idea/dictionaries
+.gradle
+.idea/dictionaries/*
 .idea/misc.xml
 out
-/testResources/secret.properties
+build
+gradle.properties
+src/test/resources/secret.properties
