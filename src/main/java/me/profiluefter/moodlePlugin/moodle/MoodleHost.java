@@ -38,6 +38,6 @@ public class MoodleHost {
 	}
 
 	public Moodle connect(MoodleToken token) {
-		return null;
+		return new Moodle(this, token);
 	}
 }
