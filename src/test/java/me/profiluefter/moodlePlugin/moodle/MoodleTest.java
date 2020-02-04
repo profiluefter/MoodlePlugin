@@ -17,6 +17,6 @@ public class MoodleTest {
 
 	@Test
 	public void getCourses() {
-		moodleInstance.getCourseById(Integer.parseInt(secrets.getProperty("moodle.course.id")), true);
+		MoodleCourse course = moodleInstance.getCourseById(Integer.parseInt(secrets.getProperty("moodle.course.id")), true);
 	}
 }

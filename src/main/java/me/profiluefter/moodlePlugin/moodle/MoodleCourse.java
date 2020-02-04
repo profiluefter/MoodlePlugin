@@ -3,18 +3,22 @@ package me.profiluefter.moodlePlugin.moodle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MoodleCourse {
-	List<MoodleSection> sections;
+	private final Map<Integer, MoodleSection> sections;
 
 	MoodleCourse(JSONArray data) {
-		sections = new ArrayList<>(data.length());
+		sections = new TreeMap<>();
 		for(Object sectionRaw : data) {
 			assert sectionRaw instanceof JSONObject;
 			JSONObject sectionObject = (JSONObject) sectionRaw;
-			sections.set(sectionObject.getInt("section"), new MoodleSection(sectionObject));
+			sections.put(sectionObject.getInt("section"), new MoodleSection(sectionObject));
 		}
+	}
+
+	public Map<Integer, MoodleSection> getSections() {
+		return sections;
 	}
 }

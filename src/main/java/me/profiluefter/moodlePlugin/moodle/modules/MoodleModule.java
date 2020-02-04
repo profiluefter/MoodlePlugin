@@ -18,7 +18,7 @@ public abstract class MoodleModule {
 			throw new RuntimeException("Error while parsing icon url", e);
 		}
 
-		this.id = data.getInt("id");
+		this.id = data.optInt("id");
 		this.name = data.getString("name");
 		this.iconURL = iconURL;
 	}
@@ -45,6 +45,9 @@ public abstract class MoodleModule {
 				break;
 			case "assign":
 				moodleModule = new MoodleAssignModule(moduleRaw);
+				break;
+			case "book":
+				moodleModule = new MoodleBookModule(moduleRaw);
 				break;
 			default:
 				throw new IllegalStateException("Unknown moodle module \n" + moduleName + "\n");
