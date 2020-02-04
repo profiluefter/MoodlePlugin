@@ -1,7 +1,5 @@
 package me.profiluefter.moodlePlugin.moodle;
 
-import me.profiluefter.moodlePlugin.moodle.data.MoodleToken;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;

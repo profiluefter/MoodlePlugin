@@ -1,7 +1,5 @@
 package me.profiluefter.moodlePlugin.moodle;
 
-import me.profiluefter.moodlePlugin.moodle.data.Course;
-import me.profiluefter.moodlePlugin.moodle.data.MoodleToken;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
@@ -16,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Moodle {
-	private final Map<Integer, Course> courses;
+	private final Map<Integer, MoodleCourse> courses;
 
 	private final MoodleHost host;
 	private final MoodleToken token;
@@ -28,13 +26,14 @@ public class Moodle {
 		this.token = token;
 	}
 
-	public Course getCourseByID(int id) {
-		return getCourseByID(id,false);
+	public MoodleCourse getCourseById(int id) {
+		return getCourseById(id,false);
 	}
 
-	public Course getCourseByID(int id, boolean forceRefresh) {
+	public MoodleCourse getCourseById(int id, boolean forceRefresh) {
 		if(forceRefresh || !courses.containsKey(id)) {
-			System.out.println(callMoodleFunction("core_course_get_contents", "courseid="+id));
+			JSONArray serverResponse = callMoodleFunction("core_course_get_contents", "courseid=" + id);
+			courses.put(id, new MoodleCourse(serverResponse));
 		}
 		return courses.get(id);
 	}

@@ -1,6 +1,5 @@
 package me.profiluefter.moodlePlugin.moodle;
 
-import me.profiluefter.moodlePlugin.moodle.data.MoodleToken;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,6 +17,6 @@ public class MoodleTest {
 
 	@Test
 	public void getCourses() {
-		moodleInstance.getCourseByID(Integer.parseInt(secrets.getProperty("moodle.course.id")), true);
+		moodleInstance.getCourseById(Integer.parseInt(secrets.getProperty("moodle.course.id")), true);
 	}
 }

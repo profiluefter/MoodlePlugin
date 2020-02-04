@@ -1,6 +1,5 @@
 package me.profiluefter.moodlePlugin.moodle;
 
-import me.profiluefter.moodlePlugin.moodle.data.MoodleToken;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
