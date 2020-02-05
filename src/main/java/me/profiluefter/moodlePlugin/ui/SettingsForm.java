@@ -50,7 +50,7 @@ public class SettingsForm {
 		MoodleSettings settings = MoodleSettings.getInstance();
 		this.hostInput.setText(settings.getHost());
 		this.courseIDInput.setValue(settings.getCourseID());
-		CredentialAttributes key = new CredentialAttributes(CredentialAttributesKt.generateServiceName("moodle", settings.getHost()));
+		CredentialAttributes key = new CredentialAttributes(CredentialAttributesKt.generateServiceName("moodle", settings.getHost() == null ? "null" : settings.getHost()));
 		Credentials credentials = PasswordSafe.getInstance().get(key);
 		if(credentials != null) {
 			this.usernameInput.setText(credentials.getUserName());

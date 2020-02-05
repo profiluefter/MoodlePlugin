@@ -20,25 +20,37 @@ public class MoodleData {
 		return ServiceManager.getService(MoodleData.class);
 	}
 
-	public void refresh() {
+	public void refresh(final Runnable callback) {
 		ProgressManager.getInstance().run(new Task.Backgroundable(null, "Loading Moodle Data", true) {
 			@Override
 			public void run(@NotNull ProgressIndicator progressIndicator) {
 				progressIndicator.setIndeterminate(true);
+				progressIndicator.checkCanceled();
 				MoodleSettings settings = MoodleSettings.getInstance();
+
 				if(moodleInstance == null) {
 					if(settings.getHost() == null) handleMissingData();
+
 					progressIndicator.setText2("Getting auth token");
 					MoodleHost host = new MoodleHost(settings.getHost());
+
 					PasswordSafe safe = PasswordSafe.getInstance();
 					CredentialAttributes key = new CredentialAttributes(CredentialAttributesKt.generateServiceName("moodle", settings.getHost()));
+					progressIndicator.checkCanceled();
 					Credentials credentials = safe.get(key);
 					if(credentials == null) handleMissingData();
+
+					progressIndicator.checkCanceled();
 					MoodleToken token = host.authenticate(credentials.getUserName(), credentials.getPasswordAsString());
 					moodleInstance = host.connect(token);
 				}
+
 				progressIndicator.setText2("Getting course data");
+				progressIndicator.checkCanceled();
 				moodleInstance.getCourseById(settings.getCourseID(), true);
+				progressIndicator.checkCanceled();
+				progressIndicator.setText2("Executing callback");
+				callback.run();
 			}
 
 			private void handleMissingData() {
@@ -50,4 +62,7 @@ public class MoodleData {
 	}
 
 
+	public Moodle getData() {
+		return moodleInstance;
+	}
 }

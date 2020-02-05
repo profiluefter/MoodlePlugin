@@ -23,4 +23,12 @@ public class MoodleSection {
 			modules.add(MoodleModule.parseModule(module));
 		}
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List<MoodleModule> getModules() {
+		return modules;
+	}
 }
