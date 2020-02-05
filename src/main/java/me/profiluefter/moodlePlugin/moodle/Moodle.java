@@ -53,7 +53,6 @@ public class Moodle {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String response = reader.lines().collect(Collectors.joining("\n"));
 			reader.close();
-			System.out.println(response);
 			return new JSONArray(response);
 		} catch(IOException e) {
 			throw new RuntimeException("Error while calling moodle function",e);

@@ -1,34 +1,26 @@
 <idea-plugin>
-    <id>com.your.company.unique.plugin.id</id>
+    <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+    Plugin that enables you to access a moodle course using any Jetbrains IDE
     ]]></description>
 
+    <!--suppress PluginXmlValidity -->
     <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-    </change-notes>
+    Initial release.
+    ]]></change-notes>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="173.0"/>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
+    <idea-version since-build="193.0"/>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Moodle" anchor="right" secondary="true"
+        <toolWindow id="Moodle" anchor="right" secondary="true" canCloseContents="true"
                     factoryClass="me.profiluefter.moodlePlugin.plugin.MoodleToolWindow"/>
+        <applicationConfigurable instance="me.profiluefter.moodlePlugin.plugin.PluginSettingsConfiguration"/>
+        <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleSettings"/>
+        <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleData"/>
     </extensions>
-
-    <actions>
-        <!-- Add your actions here -->
-    </actions>
-
 </idea-plugin>

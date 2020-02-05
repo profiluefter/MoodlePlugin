@@ -2,7 +2,7 @@ package me.profiluefter.moodlePlugin.ui;
 
 import javax.swing.*;
 
-public class MoodleTaskOverview {
+public class MoodleCourseOverview {
 	private JPanel rootPanel;
 	private JList list1;
 
