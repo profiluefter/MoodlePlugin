@@ -1,18 +1,25 @@
 package me.profiluefter.moodlePlugin.ui;
 
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
+
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
+import me.profiluefter.moodlePlugin.moodle.modules.MoodleLabelModule;
 import me.profiluefter.moodlePlugin.moodle.modules.MoodleModule;
+import me.profiluefter.moodlePlugin.moodle.modules.MoodlePageModule;
+import me.profiluefter.moodlePlugin.moodle.modules.MoodleResourceModule;
 import me.profiluefter.moodlePlugin.plugin.MoodleData;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
+import me.profiluefter.moodlePlugin.ui.moodleModules.MoodleModuleViewer;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
+import javax.swing.tree.*;
 import java.awt.*;
 
 public class MoodleCourseOverview {
@@ -20,9 +27,22 @@ public class MoodleCourseOverview {
 	private Tree tree;
 	private JButton reloadButton;
 
-	public MoodleCourseOverview() {
-		reloadButton.addActionListener(e -> {
-			reloadData();
+	public MoodleCourseOverview(Project project) {
+		reloadButton.addActionListener(e -> reloadData());
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(event -> {
+			Object lastSelectedPathComponent = tree.getLastSelectedPathComponent();
+			if(lastSelectedPathComponent instanceof DefaultMutableTreeNode) {
+				Object node = ((DefaultMutableTreeNode) lastSelectedPathComponent).getUserObject();
+				if(node instanceof MoodleModule) {
+					ContentManager contentManager = ToolWindowManager.getInstance(project).getToolWindow("Moodle").getContentManager();
+					Content content = contentManager.getFactory().createContent(
+							MoodleModuleViewer.createModuleView((MoodleModule) node),
+							((MoodleModule) node).getName(), true);
+					contentManager.addContent(content);
+					contentManager.setSelectedContent(content);
+				}
+			}
 		});
 	}
 
@@ -31,7 +51,11 @@ public class MoodleCourseOverview {
 	}
 
 	private void reloadData() {
-		MoodleData.getInstance().refresh(() -> tree.setModel(new DefaultTreeModel(moodleDataToTreeNode())));
+		tree.setPaintBusy(true);
+		MoodleData.getInstance().refresh(() -> {
+			tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
+			tree.setPaintBusy(false);
+		});
 	}
 
 	private TreeNode moodleDataToTreeNode() {
@@ -47,8 +71,6 @@ public class MoodleCourseOverview {
 
 			for(MoodleModule module : section.getModules()) {
 				DefaultMutableTreeNode moduleRoot = new DefaultMutableTreeNode(module);
-
-
 				sectionRoot.add(moduleRoot);
 			}
 
@@ -65,13 +87,28 @@ public class MoodleCourseOverview {
 			public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 				if(value instanceof DefaultMutableTreeNode) {
 					Object nodeValue = ((DefaultMutableTreeNode) value).getUserObject();
-					if(nodeValue instanceof MoodleSection) {
+					if(nodeValue instanceof String && ((String) nodeValue).equals("Course")) {
+						super.getTreeCellRendererComponent(tree, ((String) nodeValue), sel, expanded, leaf, row, hasFocus);
+						setIcon(AllIcons.Nodes.Module);
+					} else if(nodeValue instanceof MoodleSection) {
 						MoodleSection data = (MoodleSection) nodeValue;
 						super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+						setIcon(AllIcons.Nodes.Folder);
 					} else if(nodeValue instanceof MoodleModule) {
 						MoodleModule data = (MoodleModule) nodeValue;
-						super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
-						setIcon(new ImageIcon(data.getIconURL()));
+						if(data instanceof MoodlePageModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.FileTypes.Text);
+						} else if(data instanceof MoodleResourceModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.FileTypes.Custom);
+						} else if(data instanceof MoodleLabelModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(null);
+						} else {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.FileTypes.Unknown);
+						}
 					} else
 						super.getTreeCellRendererComponent(tree, nodeValue, sel, expanded, leaf, row, hasFocus);
 				} else

@@ -13,7 +13,7 @@ public class MoodleToolWindow implements ToolWindowFactory {
 	public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 		ContentManager contentManager = toolWindow.getContentManager();
 		Content courseOverview = contentManager.getFactory().createContent(
-				new MoodleCourseOverview().getRootPanel(),
+				new MoodleCourseOverview(project).getRootPanel(),
 				"Course", true);
 		courseOverview.setCloseable(false);
 		contentManager.addContent(courseOverview);
