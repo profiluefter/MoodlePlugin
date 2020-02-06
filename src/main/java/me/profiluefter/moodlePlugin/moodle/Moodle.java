@@ -50,12 +50,16 @@ public class Moodle {
 			);
 			HttpURLConnection connection = ((HttpURLConnection) endpoint.toURL().openConnection());
 			connection.connect();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 			String response = reader.lines().collect(Collectors.joining("\n"));
 			reader.close();
 			return new JSONArray(response);
 		} catch(IOException e) {
 			throw new RuntimeException("Error while calling moodle function",e);
 		}
+	}
+
+	public MoodleToken getToken() {
+		return token;
 	}
 }

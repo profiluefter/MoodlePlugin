@@ -5,9 +5,11 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 
 public class MoodlePageModule extends MoodleModule {
 	private final URL contentURL;
+	private String content;
 
 	public MoodlePageModule(JSONObject data) {
 		super(data);
@@ -24,5 +26,15 @@ public class MoodlePageModule extends MoodleModule {
 
 	public URL getContentURL() {
 		return contentURL;
+	}
+
+	public CompletableFuture<String> getContentAsync() {
+		if(content != null) return CompletableFuture.completedFuture(content);
+		CompletableFuture<String> future = BackgroundLoader.loadResource(BackgroundLoader.appendToken(contentURL), "Loading Page Content");
+		future.whenComplete((s, throwable) -> {
+			if(throwable != null) throw new RuntimeException("Error while loading content", throwable);
+			this.content = s;
+		});
+		return future;
 	}
 }

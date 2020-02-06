@@ -13,6 +13,8 @@ import me.profiluefter.moodlePlugin.moodle.MoodleHost;
 import me.profiluefter.moodlePlugin.moodle.MoodleToken;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MoodleData {
 	private Moodle moodleInstance = null;
 
@@ -20,7 +22,8 @@ public class MoodleData {
 		return ServiceManager.getService(MoodleData.class);
 	}
 
-	public void refresh(final Runnable callback) {
+	public CompletableFuture<Void> refresh() {
+		CompletableFuture<Void> future = new CompletableFuture<>();
 		ProgressManager.getInstance().run(new Task.Backgroundable(null, "Loading Moodle Data", true) {
 			@Override
 			public void run(@NotNull ProgressIndicator progressIndicator) {
@@ -29,7 +32,10 @@ public class MoodleData {
 				MoodleSettings settings = MoodleSettings.getInstance();
 
 				if(moodleInstance == null) {
-					if(settings.getHost() == null) handleMissingData();
+					if(settings.getHost() == null) {
+						handleMissingData();
+						return;
+					}
 
 					progressIndicator.setText2("Getting auth token");
 					MoodleHost host = new MoodleHost(settings.getHost());
@@ -38,7 +44,10 @@ public class MoodleData {
 					CredentialAttributes key = new CredentialAttributes(CredentialAttributesKt.generateServiceName("moodle", settings.getHost()));
 					progressIndicator.checkCanceled();
 					Credentials credentials = safe.get(key);
-					if(credentials == null) handleMissingData();
+					if(credentials == null) {
+						handleMissingData();
+						return;
+					}
 
 					progressIndicator.checkCanceled();
 					MoodleToken token = host.authenticate(credentials.getUserName(), credentials.getPasswordAsString());
@@ -50,15 +59,14 @@ public class MoodleData {
 				moodleInstance.getCourseById(settings.getCourseID(), true);
 				progressIndicator.checkCanceled();
 				progressIndicator.setText2("Executing callback");
-				callback.run();
+				future.complete(null);
 			}
 
 			private void handleMissingData() {
-				//TODO
-
-				//exception
+				future.completeExceptionally(new IllegalStateException("Missing arguments"));
 			}
 		});
+		return future;
 	}
 
 

@@ -6,7 +6,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
-
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
@@ -52,7 +51,7 @@ public class MoodleCourseOverview {
 
 	private void reloadData() {
 		tree.setPaintBusy(true);
-		MoodleData.getInstance().refresh(() -> {
+		MoodleData.getInstance().refresh().whenComplete((value, error) -> {
 			tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
 			tree.setPaintBusy(false);
 		});
@@ -87,8 +86,8 @@ public class MoodleCourseOverview {
 			public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 				if(value instanceof DefaultMutableTreeNode) {
 					Object nodeValue = ((DefaultMutableTreeNode) value).getUserObject();
-					if(nodeValue instanceof String && ((String) nodeValue).equals("Course")) {
-						super.getTreeCellRendererComponent(tree, ((String) nodeValue), sel, expanded, leaf, row, hasFocus);
+					if(nodeValue instanceof String && nodeValue.equals("Course")) {
+						super.getTreeCellRendererComponent(tree, nodeValue, sel, expanded, leaf, row, hasFocus);
 						setIcon(AllIcons.Nodes.Module);
 					} else if(nodeValue instanceof MoodleSection) {
 						MoodleSection data = (MoodleSection) nodeValue;
