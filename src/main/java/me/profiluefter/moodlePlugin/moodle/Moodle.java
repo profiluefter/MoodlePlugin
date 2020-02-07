@@ -1,6 +1,7 @@
 package me.profiluefter.moodlePlugin.moodle;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,13 +33,19 @@ public class Moodle {
 
 	public MoodleCourse getCourseById(int id, boolean forceRefresh) {
 		if(forceRefresh || !courses.containsKey(id)) {
-			JSONArray serverResponse = callMoodleFunction("core_course_get_contents", "courseid=" + id);
-			courses.put(id, new MoodleCourse(serverResponse));
+			courses.put(id, loadMoodleCourse(id));
 		}
 		return courses.get(id);
 	}
 
-	public JSONArray callMoodleFunction(String functionName, String payload) {
+	private MoodleCourse loadMoodleCourse(int id) {
+		JSONArray courseResponse = new JSONArray(callMoodleFunction("core_course_get_contents", "courseid="+id));
+		JSONObject assignResponse = new JSONObject(callMoodleFunction("mod_assign_get_assignments", "courseids[0]="+id));
+
+		return new MoodleCourse(id, courseResponse, assignResponse);
+	}
+
+	public String callMoodleFunction(String functionName, String payload) {
 		try {
 			URI endpoint = host.getMoodlePath().resolve(
 					String.format(
@@ -53,7 +60,7 @@ public class Moodle {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 			String response = reader.lines().collect(Collectors.joining("\n"));
 			reader.close();
-			return new JSONArray(response);
+			return response;
 		} catch(IOException e) {
 			throw new RuntimeException("Error while calling moodle function",e);
 		}

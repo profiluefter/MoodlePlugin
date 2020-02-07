@@ -9,10 +9,7 @@ import com.intellij.ui.treeStructure.Tree;
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
-import me.profiluefter.moodlePlugin.moodle.modules.MoodleLabelModule;
-import me.profiluefter.moodlePlugin.moodle.modules.MoodleModule;
-import me.profiluefter.moodlePlugin.moodle.modules.MoodlePageModule;
-import me.profiluefter.moodlePlugin.moodle.modules.MoodleResourceModule;
+import me.profiluefter.moodlePlugin.moodle.modules.*;
 import me.profiluefter.moodlePlugin.plugin.MoodleData;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
 import me.profiluefter.moodlePlugin.ui.moodleModules.MoodleModuleViewer;
@@ -25,8 +22,11 @@ public class MoodleCourseOverview {
 	private JPanel rootPanel;
 	private Tree tree;
 	private JButton reloadButton;
+	private Project project;
 
 	public MoodleCourseOverview(Project project) {
+		this.project = project;
+
 		reloadButton.addActionListener(e -> reloadData());
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.addTreeSelectionListener(event -> {
@@ -58,12 +58,18 @@ public class MoodleCourseOverview {
 	}
 
 	private TreeNode moodleDataToTreeNode() {
-		DefaultMutableTreeNode courseRoot = new DefaultMutableTreeNode("Course");
-
 		Moodle data = MoodleData.getInstance().getData();
-		if(data == null) return courseRoot;
+		if(data == null) return new DefaultMutableTreeNode("Course");
 
-		MoodleCourse course = data.getCourseById(MoodleSettings.getInstance().getCourseID(), false);
+		MoodleCourse course = data.getCourseById(MoodleSettings.getInstance().getCourseID());
+
+		//Set tab title
+		//noinspection ConstantConditions
+		ToolWindowManager.getInstance(project)
+				.getToolWindow("Moodle").getContentManager()
+				.getContent(rootPanel).setDisplayName(course.getShortName());
+
+		DefaultMutableTreeNode courseRoot = new DefaultMutableTreeNode(course);
 
 		for(MoodleSection section : course.getSections().values()) {
 			DefaultMutableTreeNode sectionRoot = new DefaultMutableTreeNode(section);
@@ -86,9 +92,10 @@ public class MoodleCourseOverview {
 			public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 				if(value instanceof DefaultMutableTreeNode) {
 					Object nodeValue = ((DefaultMutableTreeNode) value).getUserObject();
-					if(nodeValue instanceof String && nodeValue.equals("Course")) {
-						super.getTreeCellRendererComponent(tree, nodeValue, sel, expanded, leaf, row, hasFocus);
-						setIcon(AllIcons.Nodes.Module);
+					if(nodeValue instanceof MoodleCourse) {
+						MoodleCourse data = (MoodleCourse) nodeValue;
+						super.getTreeCellRendererComponent(tree, data.getFullName(), sel, expanded, leaf, row, hasFocus);
+						setIcon(AllIcons.Nodes.ModuleGroup);
 					} else if(nodeValue instanceof MoodleSection) {
 						MoodleSection data = (MoodleSection) nodeValue;
 						super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
@@ -100,10 +107,13 @@ public class MoodleCourseOverview {
 							setIcon(AllIcons.FileTypes.Text);
 						} else if(data instanceof MoodleResourceModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
-							setIcon(AllIcons.FileTypes.Custom);
+							setIcon(AllIcons.Nodes.Module);
 						} else if(data instanceof MoodleLabelModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(null);
+						} else if(data instanceof MoodleAssignModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.Modules.SourceRoot);
 						} else {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(AllIcons.FileTypes.Unknown);

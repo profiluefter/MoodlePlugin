@@ -7,5 +7,9 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 		super(data);
 	}
 
+	public void setAssignmentData(JSONObject data) {
+		//TODO
+	}
+
 	//TODO: methods to interact
 }
