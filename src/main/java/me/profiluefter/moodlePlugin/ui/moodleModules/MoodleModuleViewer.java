@@ -19,21 +19,23 @@ public abstract class MoodleModuleViewer {
 
 	public static JComponent createModuleView(MoodleModule module) {
 		if(module instanceof MoodleAssignModule) {
-			return new MoodleAssignViewer(((MoodleAssignModule) module)).getComponent();
+			return new MoodleAssignViewer((MoodleAssignModule) module).getComponent();
 		} else if(module instanceof MoodleBookModule) {
-			return new MoodleBookViewer(((MoodleBookModule) module)).getComponent();
+			return new MoodleBookViewer((MoodleBookModule) module).getComponent();
 		} else if(module instanceof MoodleForumModule) {
-			return new MoodleForumViewer(((MoodleForumModule) module)).getComponent();
+			return new MoodleForumViewer((MoodleForumModule) module).getComponent();
 		} else if(module instanceof MoodleLabelModule) {
-			return new MoodleLabelViewer(((MoodleLabelModule) module)).getComponent();
+			return new MoodleLabelViewer((MoodleLabelModule) module).getComponent();
 		} else if(module instanceof MoodlePageModule) {
-			return new MoodlePageViewer(((MoodlePageModule) module)).getComponent();
+			return new MoodlePageViewer((MoodlePageModule) module).getComponent();
 		} else if(module instanceof MoodleResourceModule) {
-			return new MoodleResourceViewer(((MoodleResourceModule) module)).getComponent();
+			return new MoodleResourceViewer((MoodleResourceModule) module).getComponent();
 		} else if(module instanceof MoodleURLModule) {
-			return new MoodleURLViewer(((MoodleURLModule) module)).getComponent();
+			return new MoodleURLViewer((MoodleURLModule) module).getComponent();
+		} else if(module instanceof MoodleUnknownModule) {
+			return new MoodleUnknownViewer((MoodleUnknownModule) module).getComponent();
 		} else {
-			throw new IllegalStateException("Unknown moodle module " + module.getClass().getName());
+			throw new IllegalStateException("No viewer for module " + module.getClass().getName());
 		}
 	}
 }

@@ -22,6 +22,7 @@ public class MoodleCourseOverview {
 	private JPanel rootPanel;
 	private Tree tree;
 	private JButton reloadButton;
+	private JToolBar toolBar;
 	private Project project;
 
 	public MoodleCourseOverview(Project project) {
@@ -52,8 +53,10 @@ public class MoodleCourseOverview {
 	private void reloadData() {
 		tree.setPaintBusy(true);
 		MoodleData.getInstance().refresh().whenComplete((value, error) -> {
-			tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
-			tree.setPaintBusy(false);
+			SwingUtilities.invokeLater(() -> {
+				tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
+				tree.setPaintBusy(false);
+			});
 		});
 	}
 
@@ -65,9 +68,10 @@ public class MoodleCourseOverview {
 
 		//Set tab title
 		//noinspection ConstantConditions
-		ToolWindowManager.getInstance(project)
-				.getToolWindow("Moodle").getContentManager()
-				.getContent(rootPanel).setDisplayName(course.getShortName());
+		ContentManager contentManager = ToolWindowManager.getInstance(project).getToolWindow("Moodle").getContentManager();
+		Content content = contentManager.getContent(rootPanel);
+		String shortName = course.getShortName();
+		content.setDisplayName(shortName);
 
 		DefaultMutableTreeNode courseRoot = new DefaultMutableTreeNode(course);
 
@@ -86,7 +90,10 @@ public class MoodleCourseOverview {
 	}
 
 	private void createUIComponents() {
+		//TODO: http://www.jetbrains.org/intellij/sdk/docs/basics/action_system.html#building-ui-from-actions
+
 		tree = new Tree(moodleDataToTreeNode());
+		ToolTipManager.sharedInstance().registerComponent(tree);
 		tree.setCellRenderer(new DefaultTreeCellRenderer() {
 			@Override
 			public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -100,6 +107,7 @@ public class MoodleCourseOverview {
 						MoodleSection data = (MoodleSection) nodeValue;
 						super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 						setIcon(AllIcons.Nodes.Folder);
+						setToolTipText(data.getSummary());
 					} else if(nodeValue instanceof MoodleModule) {
 						MoodleModule data = (MoodleModule) nodeValue;
 						if(data instanceof MoodlePageModule) {
@@ -114,6 +122,10 @@ public class MoodleCourseOverview {
 						} else if(data instanceof MoodleAssignModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(AllIcons.Modules.SourceRoot);
+						} else if(data instanceof MoodleUnknownModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.FileTypes.Unknown);
+							setToolTipText("Unknown Module ID: "+((MoodleUnknownModule) data).getModuleName());
 						} else {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(AllIcons.FileTypes.Unknown);

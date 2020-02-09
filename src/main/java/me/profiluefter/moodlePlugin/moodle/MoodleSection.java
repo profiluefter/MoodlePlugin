@@ -10,11 +10,13 @@ import java.util.List;
 public class MoodleSection {
 	private int id;
 	private String name;
+	private String summary;
 	private List<MoodleModule> modules;
 
 	public MoodleSection(JSONObject data) {
 		this.id = data.getInt("id");
 		this.name = data.getString("name");
+		this.summary = data.optString("summary");
 		JSONArray modulesRaw = data.getJSONArray("modules");
 		this.modules = new ArrayList<>(modulesRaw.length());
 		for(Object moduleRaw : modulesRaw) {
@@ -26,6 +28,10 @@ public class MoodleSection {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getSummary() {
+		return summary;
 	}
 
 	public List<MoodleModule> getModules() {

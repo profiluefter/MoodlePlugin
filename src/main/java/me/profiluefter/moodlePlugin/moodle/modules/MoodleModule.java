@@ -1,5 +1,6 @@
 package me.profiluefter.moodlePlugin.moodle.modules;
 
+import com.intellij.openapi.diagnostic.Logger;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
@@ -50,7 +51,9 @@ public abstract class MoodleModule {
 				moodleModule = new MoodleBookModule(moduleRaw);
 				break;
 			default:
-				throw new IllegalStateException("Unknown moodle module \n" + moduleName + "\n");
+				Logger.getInstance(MoodleModule.class).warn("Unknown moodle module: "+moduleName);
+				moodleModule = new MoodleUnknownModule(moduleRaw);
+				break;
 		}
 
 		return moodleModule;
@@ -66,5 +69,10 @@ public abstract class MoodleModule {
 
 	public URL getIconURL() {
 		return iconURL;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("ID: %s\nName: %s\nIcon URL: %s", getId(), getName(), getIconURL());
 	}
 }

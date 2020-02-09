@@ -58,7 +58,6 @@ public class MoodleData {
 				progressIndicator.checkCanceled();
 				moodleInstance.getCourseById(settings.getCourseID(), true);
 				progressIndicator.checkCanceled();
-				progressIndicator.setText2("Executing callback");
 				future.complete(null);
 			}
 
