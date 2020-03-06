@@ -14,7 +14,7 @@ public class MoodleURLViewer extends MoodleModuleViewer{
 			try {
 				Desktop.getDesktop().browse(module.getUrl().toURI());
 			} catch(IOException | URISyntaxException ex) {
-				throw new RuntimeException("Error while opening forum link", ex);
+				throw new RuntimeException("Error while opening link", ex);
 			}
 		});}});
 	}

@@ -115,13 +115,16 @@ public class MoodleCourseOverview {
 							setIcon(AllIcons.FileTypes.Text);
 						} else if(data instanceof MoodleResourceModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
-							setIcon(AllIcons.Nodes.Module);
+							setIcon(AllIcons.Actions.Download);
 						} else if(data instanceof MoodleLabelModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(null);
 						} else if(data instanceof MoodleAssignModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(AllIcons.Modules.SourceRoot);
+						} else if(data instanceof MoodleURLModule) {
+							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
+							setIcon(AllIcons.Actions.OpenNewTab);
 						} else if(data instanceof MoodleUnknownModule) {
 							super.getTreeCellRendererComponent(tree, data.getName(), sel, expanded, leaf, row, hasFocus);
 							setIcon(AllIcons.FileTypes.Unknown);

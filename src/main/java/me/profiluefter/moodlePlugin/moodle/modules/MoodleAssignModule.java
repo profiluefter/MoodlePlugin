@@ -17,7 +17,7 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 	private Map<String, MoodleFile> assets;
 	private Map<String, MoodleFile> attachments;
 	private int maxAttempts;
-	private String content;
+	private String description;
 	private int assignmentID;
 	private Date dueDate;
 	private Integer grade;
@@ -97,7 +97,7 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 		assert data.getInt("submissiondrafts") == 0 || data.getInt("submissiondrafts") == 1;
 		this.submissionDraft = data.getInt("submissiondrafts") == 1;
 		this.maxAttempts = data.getInt("maxattempts");
-		this.content = data.getString("intro");
+		this.description = data.getString("intro");
 		this.assignmentID = data.getInt("id");
 		this.grade = data.getInt("grade") == -34 ? null : data.getInt("grade");
 
@@ -140,5 +140,9 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 		public String getAbsolutePath() {
 			return filePath + fileName;
 		}
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
