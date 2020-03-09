@@ -1,16 +1,16 @@
 <idea-plugin>
     <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
-    Plugin that enables you to access a moodle course using any Jetbrains IDE
+    Plugin that enables you to access a moodle course using any JetBrains IDE.
+    WIP and currently only supports read access.
     ]]></description>
 
-    <!--suppress PluginXmlValidity -->
     <change-notes><![CDATA[
-    Initial release.
+    Update description
     ]]></change-notes>
 
     <idea-version since-build="193.0"/>
@@ -23,4 +23,14 @@
         <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleSettings"/>
         <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleData"/>
     </extensions>
+
+    <actions>
+        <group id="me.profiluefter.moodlePlugin" text="Moodle Actions" popup="false" compact="true">
+            <action id="me.profiluefter.moodlePlugin.plugin.MoodleRefreshAction"
+                    class="me.profiluefter.moodlePlugin.plugin.MoodleRefreshAction"
+                    text="Refresh Moodle"
+                    description="Reload the data from the specified moodle servers"
+                    icon="/actions/refresh.svg"/>
+        </group>
+    </actions>
 </idea-plugin>

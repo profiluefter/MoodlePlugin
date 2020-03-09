@@ -1,8 +1,12 @@
 package me.profiluefter.moodlePlugin.ui;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
@@ -18,17 +22,16 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 
-public class MoodleCourseOverview {
+public class MoodleCoursePanel {
 	private JPanel rootPanel;
 	private Tree tree;
-	private JButton reloadButton;
-	private JToolBar toolBar;
-	private Project project;
+	private JComponent toolbar;
+	private JScrollPane scrollPane;
+	private final Project project;
 
-	public MoodleCourseOverview(Project project) {
+	public MoodleCoursePanel(Project project) {
 		this.project = project;
 
-		reloadButton.addActionListener(e -> reloadData());
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.addTreeSelectionListener(event -> {
 			Object lastSelectedPathComponent = tree.getLastSelectedPathComponent();
@@ -50,14 +53,12 @@ public class MoodleCourseOverview {
 		return rootPanel;
 	}
 
-	private void reloadData() {
+	public void refreshData() {
 		tree.setPaintBusy(true);
-		MoodleData.getInstance().refresh().whenComplete((value, error) -> {
-			SwingUtilities.invokeLater(() -> {
-				tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
-				tree.setPaintBusy(false);
-			});
-		});
+		MoodleData.getInstance().refresh().whenComplete((value, error) -> SwingUtilities.invokeLater(() -> {
+			tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
+			tree.setPaintBusy(false);
+		}));
 	}
 
 	private TreeNode moodleDataToTreeNode() {
@@ -90,7 +91,12 @@ public class MoodleCourseOverview {
 	}
 
 	private void createUIComponents() {
-		//TODO: http://www.jetbrains.org/intellij/sdk/docs/basics/action_system.html#building-ui-from-actions
+		scrollPane = new JBScrollPane();
+
+		ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("Moodle Actions", (ActionGroup) ActionManager.getInstance().getAction("me.profiluefter.moodlePlugin"), true);
+		toolbar = actionToolbar.getComponent();
+		toolbar.setBorder(BorderFactory.createEmptyBorder());
+		actionToolbar.setTargetComponent(rootPanel);
 
 		tree = new Tree(moodleDataToTreeNode());
 		ToolTipManager.sharedInstance().registerComponent(tree);
