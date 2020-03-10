@@ -10,6 +10,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ui.JBEmptyBorder;
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
@@ -94,9 +95,9 @@ public class MoodleCoursePanel {
 		scrollPane = new JBScrollPane();
 
 		ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("Moodle Actions", (ActionGroup) ActionManager.getInstance().getAction("me.profiluefter.moodlePlugin"), true);
-		toolbar = actionToolbar.getComponent();
-		toolbar.setBorder(BorderFactory.createEmptyBorder());
 		actionToolbar.setTargetComponent(rootPanel);
+		toolbar = actionToolbar.getComponent();
+		toolbar.setBorder(new JBEmptyBorder(2));
 
 		tree = new Tree(moodleDataToTreeNode());
 		ToolTipManager.sharedInstance().registerComponent(tree);
