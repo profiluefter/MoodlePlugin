@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 public class MoodleCourse {
@@ -46,7 +47,7 @@ public class MoodleCourse {
 		return sections.values().stream()
 				.flatMap(section -> section.getModules().stream())
 				.filter(module -> module.getId() == id)
-				.findAny().orElseThrow();
+				.findAny().orElseThrow(NoSuchElementException::new);
 	}
 
 	public Map<Integer, MoodleSection> getSections() {

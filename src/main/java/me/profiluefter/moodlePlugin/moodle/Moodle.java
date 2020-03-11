@@ -50,8 +50,8 @@ public class Moodle {
 			URI endpoint = host.getMoodlePath().resolve(
 					String.format(
 							"webservice/rest/server.php?wstoken=%s&wsfunction=%s&moodlewsrestformat=json&%s",
-							URLEncoder.encode(this.token.getToken(), StandardCharsets.UTF_8),
-							URLEncoder.encode(functionName, StandardCharsets.UTF_8),
+							URLEncoder.encode(this.token.getToken(), "UTF-8"),
+							URLEncoder.encode(functionName, "UTF-8"),
 							payload
 					)
 			);

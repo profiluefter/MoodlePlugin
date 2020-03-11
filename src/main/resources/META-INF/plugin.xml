@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
-    <version>1.0.1</version>
+    <version>1.1.1</version>
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
-    Update description
+    Should now be compatible with earlier IDEs.
+    Now targeting Java 8 instead of Java 11.
     ]]></change-notes>
 
-    <idea-version since-build="193.0"/>
+    <idea-version since-build="191.0"/>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -29,8 +30,7 @@
             <action id="me.profiluefter.moodlePlugin.plugin.MoodleRefreshAction"
                     class="me.profiluefter.moodlePlugin.plugin.MoodleRefreshAction"
                     text="Refresh Moodle"
-                    description="Reload the data from the specified moodle servers"
-                    icon="/actions/refresh.svg"/>
+                    description="Reload the data from the specified moodle servers"/>
         </group>
     </actions>
 </idea-plugin>

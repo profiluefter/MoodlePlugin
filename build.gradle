@@ -15,3 +15,7 @@ dependencies {
 intellij {
     localPath project.properties['intellij.localPath']
 }
+
+publishPlugin {
+    token = System.getenv("intellijPublishToken")
+}
