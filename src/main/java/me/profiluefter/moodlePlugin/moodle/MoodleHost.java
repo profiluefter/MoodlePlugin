@@ -2,9 +2,14 @@ package me.profiluefter.moodlePlugin.moodle;
 
 import org.json.JSONObject;
 
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.stream.Collectors;
 
 public class MoodleHost {
@@ -20,13 +25,18 @@ public class MoodleHost {
 	}
 
 	public MoodleToken authenticate(String username, String password) {
-		URI loginEndpoint = moodlePath.resolve(
-				String.format(
-						"login/token.php?username=%s&password=%s&service=%s",
-						URLEncoder.encode(username, StandardCharsets.UTF_8),
-						URLEncoder.encode(password, StandardCharsets.UTF_8),
-						URLEncoder.encode(MOODLE_SERVICE, StandardCharsets.UTF_8)
-				));
+		URI loginEndpoint;
+		try {
+			loginEndpoint = moodlePath.resolve(
+					String.format(
+							"login/token.php?username=%s&password=%s&service=%s",
+							URLEncoder.encode(username, "UTF-8"),
+							URLEncoder.encode(password, "UTF-8"),
+							URLEncoder.encode(MOODLE_SERVICE, "UTF-8")
+					));
+		} catch(UnsupportedEncodingException e) {
+			throw new IllegalStateException("UTF-8 Encoding not supported?", e);
+		}
 
 		String response;
 
