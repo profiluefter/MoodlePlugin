@@ -3,10 +3,10 @@ package me.profiluefter.moodlePlugin.plugin;
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.credentialStore.CredentialAttributesKt;
 import com.intellij.credentialStore.Credentials;
+import com.intellij.ide.ActivityTracker;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleHost;
@@ -14,9 +14,11 @@ import me.profiluefter.moodlePlugin.moodle.MoodleToken;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MoodleData {
 	private Moodle moodleInstance = null;
+	private final AtomicBoolean currentlyRefreshing = new AtomicBoolean(false);
 
 	public static MoodleData getInstance() {
 		return ServiceManager.getService(MoodleData.class);
@@ -24,16 +26,18 @@ public class MoodleData {
 
 	public CompletableFuture<Void> refresh() {
 		CompletableFuture<Void> future = new CompletableFuture<>();
-		ProgressManager.getInstance().run(new Task.Backgroundable(null, "Loading Moodle Data", true) {
+		new Task.Backgroundable(null, "Loading Moodle Data", true) {
 			@Override
 			public void run(@NotNull ProgressIndicator progressIndicator) {
 				progressIndicator.setIndeterminate(true);
-				progressIndicator.checkCanceled();
+				currentlyRefreshing.set(true);
+				ActivityTracker.getInstance().inc();
 				MoodleSettings settings = MoodleSettings.getInstance();
+				progressIndicator.checkCanceled();
 
 				if(moodleInstance == null) {
 					if(settings.getHost() == null) {
-						handleMissingData();
+						future.completeExceptionally(new IllegalStateException("Missing arguments"));
 						return;
 					}
 
@@ -45,7 +49,7 @@ public class MoodleData {
 					progressIndicator.checkCanceled();
 					Credentials credentials = safe.get(key);
 					if(credentials == null) {
-						handleMissingData();
+						future.completeExceptionally(new IllegalStateException("Missing arguments"));
 						return;
 					}
 
@@ -61,13 +65,32 @@ public class MoodleData {
 				future.complete(null);
 			}
 
-			private void handleMissingData() {
-				future.completeExceptionally(new IllegalStateException("Missing arguments"));
+			@Override
+			public void onCancel() {
+				setFinished();
 			}
-		});
+
+			@Override
+			public void onSuccess() {
+				setFinished();
+			}
+
+			@Override
+			public void onThrowable(@NotNull Throwable error) {
+				setFinished();
+			}
+
+			private void setFinished() {
+				currentlyRefreshing.set(false);
+				ActivityTracker.getInstance().inc();
+			}
+		}.queue();
 		return future;
 	}
 
+	public boolean isRefreshing() {
+		return currentlyRefreshing.get();
+	}
 
 	public Moodle getData() {
 		return moodleInstance;

@@ -9,6 +9,7 @@ public class MoodleRefreshAction extends AnAction {
 	@Override
 	public void update(@NotNull AnActionEvent e) {
 		e.getPresentation().setIcon(AllIcons.Actions.Refresh); //TODO: Find out how to do this in plugin.xml
+		e.getPresentation().setEnabled(!MoodleData.getInstance().isRefreshing());
 	}
 
 	@Override

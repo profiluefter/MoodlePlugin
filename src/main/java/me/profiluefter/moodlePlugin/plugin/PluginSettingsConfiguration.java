@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PluginSettingsConfiguration implements Configurable {//TODO: handle sensitive data
+public class PluginSettingsConfiguration implements Configurable {
 	private SettingsForm form;
 
 	@Nullable
@@ -19,7 +19,7 @@ public class PluginSettingsConfiguration implements Configurable {//TODO: handle
 
 	@Override
 	public boolean isModified() {
-		return !MoodleSettings.getInstance().equals(form.getData()); //TODO: trigger for credential change
+		return form.hasCredentialsChanged() || !MoodleSettings.getInstance().equals(form.getData());
 	}
 
 	@Override

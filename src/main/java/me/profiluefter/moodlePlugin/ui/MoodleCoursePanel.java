@@ -9,17 +9,19 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.ui.JBEmptyBorder;
 import me.profiluefter.moodlePlugin.moodle.Moodle;
 import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
-import me.profiluefter.moodlePlugin.moodle.modules.*;
+import me.profiluefter.moodlePlugin.moodle.modules.MoodleModule;
 import me.profiluefter.moodlePlugin.plugin.MoodleData;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
 import me.profiluefter.moodlePlugin.ui.moodleModules.MoodleModuleViewer;
 
 import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 public class MoodleCoursePanel {
 	private JPanel rootPanel;
@@ -62,7 +64,7 @@ public class MoodleCoursePanel {
 
 	private TreeNode moodleDataToTreeNode() {
 		Moodle data = MoodleData.getInstance().getData();
-		if(data == null) return new DefaultMutableTreeNode("Course");
+		if(data == null) return null;
 
 		MoodleCourse course = data.getCourseById(MoodleSettings.getInstance().getCourseID());
 
@@ -91,15 +93,15 @@ public class MoodleCoursePanel {
 
 	private void createUIComponents() {
 		scrollPane = new JBScrollPane();
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
 		ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("Moodle Actions", (ActionGroup) ActionManager.getInstance().getAction("me.profiluefter.moodlePlugin"), true);
 		actionToolbar.setTargetComponent(rootPanel);
 		toolbar = actionToolbar.getComponent();
-		toolbar.setBorder(new JBEmptyBorder(2));
 
 		tree = new Tree(moodleDataToTreeNode());
 		ToolTipManager.sharedInstance().registerComponent(tree);
 		tree.setCellRenderer(new MoodleCellRenderer());
+		tree.getEmptyText().setText("Data not loaded");
 	}
-
 }

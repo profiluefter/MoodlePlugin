@@ -7,6 +7,8 @@ import com.intellij.ide.passwordSafe.PasswordSafe;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class SettingsForm {
 	private JPanel rootPanel;
@@ -14,6 +16,22 @@ public class SettingsForm {
 	private JPasswordField passwordInput;
 	private JSpinner courseIDInput;
 	private JTextField hostInput;
+	private boolean credentialsChanged = false;
+
+	public SettingsForm() {
+		DocumentListener listener = new DocumentListener() {
+			@Override public void insertUpdate(DocumentEvent e) {onChange(e);}
+			@Override public void removeUpdate(DocumentEvent e) {onChange(e);}
+			@Override public void changedUpdate(DocumentEvent e) {onChange(e);}
+
+			private void onChange(DocumentEvent e) {
+				credentialsChanged = true;
+			}
+		};
+
+		usernameInput.getDocument().addDocumentListener(listener);
+		passwordInput.getDocument().addDocumentListener(listener);
+	}
 
 	public JPanel getRootPanel() {
 		return rootPanel;
@@ -33,6 +51,10 @@ public class SettingsForm {
 
 	public String getHost() {
 		return hostInput.getText();
+	}
+
+	public boolean hasCredentialsChanged() {
+		return credentialsChanged;
 	}
 
 	public MoodleSettings getData() {
@@ -56,5 +78,6 @@ public class SettingsForm {
 			this.usernameInput.setText(credentials.getUserName());
 			this.passwordInput.setText(credentials.getPasswordAsString());
 		}
+		credentialsChanged = false;
 	}
 }

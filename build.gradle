@@ -14,6 +14,7 @@ dependencies {
 
 intellij {
     localPath project.properties['intellij.localPath']
+    updateSinceUntilBuild false
 }
 
 publishPlugin {

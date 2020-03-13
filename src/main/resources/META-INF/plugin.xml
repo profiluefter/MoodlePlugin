@@ -1,20 +1,20 @@
 <idea-plugin>
     <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
-    Plugin that enables you to access a moodle course using any JetBrains IDE.
+    Plugin that enables you to interact with a moodle course using any JetBrains IDE.
     WIP and currently only supports read access.
     ]]></description>
 
     <change-notes><![CDATA[
-    Should now be compatible with earlier IDEs.
-    Now targeting Java 8 instead of Java 11.
+    The refresh action is now disabled if the course is already being refreshed.
+    Also there is now a gray text instead of an empty course if no data is loaded.
     ]]></change-notes>
 
-    <idea-version since-build="191.0"/>
+    <idea-version since-build="191"/>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
