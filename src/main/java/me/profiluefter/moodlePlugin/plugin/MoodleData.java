@@ -36,7 +36,7 @@ public class MoodleData {
 				progressIndicator.checkCanceled();
 
 				if(moodleInstance == null) {
-					if(settings.getHost() == null) {
+					if(settings.getHost() == null || settings.getHost().isEmpty()) {
 						future.completeExceptionally(new IllegalStateException("Missing arguments"));
 						return;
 					}
@@ -48,7 +48,11 @@ public class MoodleData {
 					CredentialAttributes key = new CredentialAttributes(CredentialAttributesKt.generateServiceName("moodle", settings.getHost()));
 					progressIndicator.checkCanceled();
 					Credentials credentials = safe.get(key);
-					if(credentials == null) {
+					if(credentials == null
+							|| credentials.getUserName() == null
+							|| credentials.getPasswordAsString() == null
+							|| credentials.getPasswordAsString().isEmpty()
+							|| credentials.getUserName().isEmpty()) {
 						future.completeExceptionally(new IllegalStateException("Missing arguments"));
 						return;
 					}
@@ -60,6 +64,10 @@ public class MoodleData {
 
 				progressIndicator.setText2("Getting course data");
 				progressIndicator.checkCanceled();
+				if(settings.getCourseID() == -1) {
+					future.completeExceptionally(new IllegalStateException("Missing arguments"));
+					return;
+				}
 				moodleInstance.getCourseById(settings.getCourseID(), true);
 				progressIndicator.checkCanceled();
 				future.complete(null);

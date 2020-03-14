@@ -1,8 +1,12 @@
 package me.profiluefter.moodlePlugin.ui;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationAction;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.options.newEditor.SettingsDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.JBScrollPane;
@@ -14,7 +18,9 @@ import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
 import me.profiluefter.moodlePlugin.moodle.modules.MoodleModule;
 import me.profiluefter.moodlePlugin.plugin.MoodleData;
+import me.profiluefter.moodlePlugin.plugin.MoodleNotification;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
+import me.profiluefter.moodlePlugin.plugin.PluginSettingsConfiguration;
 import me.profiluefter.moodlePlugin.ui.moodleModules.MoodleModuleViewer;
 
 import javax.swing.*;
@@ -22,6 +28,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 
 public class MoodleCoursePanel {
 	private JPanel rootPanel;
@@ -56,9 +63,21 @@ public class MoodleCoursePanel {
 
 	public void refreshData() {
 		tree.setPaintBusy(true);
-		MoodleData.getInstance().refresh().whenComplete((value, error) -> SwingUtilities.invokeLater(() -> {
-			tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
+		MoodleData.getInstance().refresh().whenComplete((value, error) -> EventQueue.invokeLater(() -> {
 			tree.setPaintBusy(false);
+			if(error == null) {
+				tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
+			} else {
+				if(error instanceof IllegalStateException && error.getMessage().equals("Missing arguments")) {
+					Notification notification = new Notification(MoodleNotification.getGroupID(), "Credentials not specified", "The credentials or host settings are not specified!", NotificationType.ERROR);
+					//TODO: Replace Action with a registered Action
+					notification.addAction(NotificationAction.createSimple("Open Settings", () -> EventQueue.invokeLater(() ->
+							new SettingsDialog(project, null, new PluginSettingsConfiguration(), false, true).show())));
+					notification.notify(project);
+				} else {
+					throw new RuntimeException(error);
+				}
+			}
 		}));
 	}
 
