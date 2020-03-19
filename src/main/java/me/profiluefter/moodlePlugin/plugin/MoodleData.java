@@ -26,7 +26,7 @@ public class MoodleData {
 
 	public CompletableFuture<Void> refresh() {
 		CompletableFuture<Void> future = new CompletableFuture<>();
-		new Task.Backgroundable(null, "Loading Moodle Data", true) {
+		new Task.Backgroundable(null, "Loading moodle data", true) {
 			@Override
 			public void run(@NotNull ProgressIndicator progressIndicator) {
 				progressIndicator.setIndeterminate(true);
@@ -58,8 +58,12 @@ public class MoodleData {
 					}
 
 					progressIndicator.checkCanceled();
-					MoodleToken token = host.authenticate(credentials.getUserName(), credentials.getPasswordAsString());
-					moodleInstance = host.connect(token);
+					try {
+						MoodleToken token = host.authenticate(credentials.getUserName(), credentials.getPasswordAsString());
+						moodleInstance = host.connect(token);
+					} catch(IllegalArgumentException exception) {
+						future.completeExceptionally(new IllegalStateException("Login not successful", exception));
+					}
 				}
 
 				progressIndicator.setText2("Getting course data");

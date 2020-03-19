@@ -50,7 +50,11 @@ public class MoodleHost {
 			throw new RuntimeException("Error while connecting to authentication endpoint", e);
 		}
 
-		String token = new JSONObject(response).getString("token");
+		JSONObject jsonResponse = new JSONObject(response);
+		assert jsonResponse.has("token") || jsonResponse.has("error");
+		if(jsonResponse.has("error"))
+			throw new IllegalArgumentException(jsonResponse.getString("error"));
+		String token = jsonResponse.getString("token");
 
 		return new MoodleToken(token);
 	}

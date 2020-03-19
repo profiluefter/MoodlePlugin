@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
@@ -10,7 +10,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-    If you forget to specify credentials in the plugin settings, now there is a notification instead of failing silently!
+    If there is an error while logging in, it is now shown in form of a notification.
     ]]></change-notes>
 
     <idea-version since-build="191"/>

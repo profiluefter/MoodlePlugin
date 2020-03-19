@@ -68,12 +68,21 @@ public class MoodleCoursePanel {
 			if(error == null) {
 				tree.setModel(new DefaultTreeModel(moodleDataToTreeNode()));
 			} else {
-				if(error instanceof IllegalStateException && error.getMessage().equals("Missing arguments")) {
-					Notification notification = new Notification(MoodleNotification.getGroupID(), "Credentials not specified", "The credentials or host settings are not specified!", NotificationType.ERROR);
-					//TODO: Replace Action with a registered Action
-					notification.addAction(NotificationAction.createSimple("Open Settings", () -> EventQueue.invokeLater(() ->
-							new SettingsDialog(project, null, new PluginSettingsConfiguration(), false, true).show())));
-					notification.notify(project);
+				if(error instanceof IllegalStateException) {
+					switch(error.getMessage()) {
+						case "Missing arguments": {
+							Notification notification = new Notification(MoodleNotification.getGroupID(), "Credentials not specified", "The credentials or host settings are not specified!", NotificationType.ERROR);
+							//TODO: Replace Action with a registered Action
+							notification.addAction(NotificationAction.createSimple("Open Settings", () -> EventQueue.invokeLater(() ->
+									new SettingsDialog(project, null, new PluginSettingsConfiguration(), false, true).show())));
+							notification.notify(project);
+						}
+						break;
+						case "Login not successful": {
+							new Notification(MoodleNotification.getGroupID(), "Login was not successful!", error.getCause().getMessage(), NotificationType.ERROR).notify(project);
+						}
+						break;
+					}
 				} else {
 					throw new RuntimeException(error);
 				}
