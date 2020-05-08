@@ -16,6 +16,7 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 	private Map<String, String> configs;
 	private Map<String, MoodleFile> assets;
 	private Map<String, MoodleFile> attachments;
+
 	private int maxAttempts;
 	private String description;
 	private int assignmentID;
@@ -144,5 +145,45 @@ public class MoodleAssignModule extends MoodleModuleWithURL {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public AttemptReopenMethod getAttemptReopenMethod() {
+		return attemptReopenMethod;
+	}
+
+	public Map<String, String> getConfigs() {
+		return configs;
+	}
+
+	public Map<String, MoodleFile> getAssets() {
+		return assets;
+	}
+
+	public Map<String, MoodleFile> getAttachments() {
+		return attachments;
+	}
+
+	public int getMaxAttempts() {
+		return maxAttempts;
+	}
+
+	public int getAssignmentID() {
+		return assignmentID;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public Integer getGrade() {
+		return grade;
+	}
+
+	public boolean isSubmissions() {
+		return submissions;
+	}
+
+	public boolean isSubmissionDraft() {
+		return submissionDraft;
 	}
 }

@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class MoodleAssignViewer extends MoodleModuleViewer {
 	private JPanel guiBuilderPanel;
-	private JBLabel description;
+	private JLabel name;
 
 	public MoodleAssignViewer(MoodleAssignModule module) {
 		super(module);
@@ -18,12 +18,12 @@ public class MoodleAssignViewer extends MoodleModuleViewer {
 		scrollablePanel.add(guiBuilderPanel);
 		panel.add(new JScrollPane(scrollablePanel));
 
-		guiSetup();
+		name.setText("<html>"+module.getDescription()+"</html>");
 
-		description.setText("<html>"+module.getDescription()+"</html>");
 	}
 
-	private void guiSetup() {
-		description.setAllowAutoWrapping(true);
+	private void createUIComponents() {
+		name = new JBLabel();
+		((JBLabel) name).setAllowAutoWrapping(true);
 	}
 }
