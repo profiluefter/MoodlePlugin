@@ -1,5 +1,6 @@
 package me.profiluefter.moodlePlugin.plugin;
 
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MoodleToolWindow implements ToolWindowFactory {
+public class MoodleToolWindow implements ToolWindowFactory, DumbAware {
 
 	private static final Map<Project, MoodleCoursePanel> contents = new HashMap<>();
 
