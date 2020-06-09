@@ -13,7 +13,7 @@
     If there is an error while logging in, it is now shown in form of a notification.
     ]]></change-notes>
 
-    <idea-version since-build="191"/>
+    <idea-version since-build="201.2037"/>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
