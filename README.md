@@ -1,0 +1,1 @@
+More information about this project is available on the [project-page on profiluefter.me](https://profiluefter.me/projects/moodle-plugin)
