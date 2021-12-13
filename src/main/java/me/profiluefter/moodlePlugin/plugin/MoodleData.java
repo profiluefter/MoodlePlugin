@@ -5,7 +5,7 @@ import com.intellij.credentialStore.CredentialAttributesKt;
 import com.intellij.credentialStore.Credentials;
 import com.intellij.ide.ActivityTracker;
 import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import me.profiluefter.moodlePlugin.moodle.Moodle;
@@ -21,7 +21,7 @@ public class MoodleData {
 	private final AtomicBoolean currentlyRefreshing = new AtomicBoolean(false);
 
 	public static MoodleData getInstance() {
-		return ServiceManager.getService(MoodleData.class);
+		return ApplicationManager.getApplication().getService(MoodleData.class);
 	}
 
 	public CompletableFuture<Void> refresh() {

@@ -1,6 +1,5 @@
 .gradle
-.idea/dictionaries/*
-.idea/misc.xml
+.idea/
 out
 build
 gradle.properties

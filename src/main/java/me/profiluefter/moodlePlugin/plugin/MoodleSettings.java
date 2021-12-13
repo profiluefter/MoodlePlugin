@@ -1,7 +1,7 @@
 package me.profiluefter.moodlePlugin.plugin;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -15,7 +15,7 @@ import java.util.Objects;
 })
 public class MoodleSettings implements PersistentStateComponent<MoodleSettings> {
 	public static MoodleSettings getInstance() {
-		return ServiceManager.getService(MoodleSettings.class);
+		return ApplicationManager.getApplication().getService(MoodleSettings.class);
 	}
 	private String host;
 	private int courseID;

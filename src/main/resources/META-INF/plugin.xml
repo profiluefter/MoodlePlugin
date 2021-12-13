@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>me.profiluefter.moodlePlugin</id>
     <name>Moodle</name>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
@@ -10,7 +10,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-    If there is an error while logging in, it is now shown in form of a notification.
+    Update plugin to replace deprecated methods
     ]]></change-notes>
 
     <idea-version since-build="191"/>
@@ -22,6 +22,7 @@
         <applicationConfigurable instance="me.profiluefter.moodlePlugin.plugin.PluginSettingsConfiguration"/>
         <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleSettings"/>
         <applicationService serviceImplementation="me.profiluefter.moodlePlugin.plugin.MoodleData"/>
+        <notificationGroup id="Moodle" displayType="BALLOON"/>
     </extensions>
 
     <actions>

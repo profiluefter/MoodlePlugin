@@ -2,6 +2,7 @@ package me.profiluefter.moodlePlugin.ui;
 
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -18,7 +19,6 @@ import me.profiluefter.moodlePlugin.moodle.MoodleCourse;
 import me.profiluefter.moodlePlugin.moodle.MoodleSection;
 import me.profiluefter.moodlePlugin.moodle.modules.MoodleModule;
 import me.profiluefter.moodlePlugin.plugin.MoodleData;
-import me.profiluefter.moodlePlugin.plugin.MoodleNotification;
 import me.profiluefter.moodlePlugin.plugin.MoodleSettings;
 import me.profiluefter.moodlePlugin.plugin.PluginSettingsConfiguration;
 import me.profiluefter.moodlePlugin.ui.moodleModules.MoodleModuleViewer;
@@ -71,15 +71,18 @@ public class MoodleCoursePanel {
 				if(error instanceof IllegalStateException) {
 					switch(error.getMessage()) {
 						case "Missing arguments": {
-							Notification notification = new Notification(MoodleNotification.getGroupID(), "Credentials not specified", "The credentials or host settings are not specified!", NotificationType.ERROR);
+							Notification notification = NotificationGroupManager.getInstance().getNotificationGroup("Moodle")
+									.createNotification("Credentials not specified", "The credentials or host settings are not specified!", NotificationType.ERROR);
 							//TODO: Replace Action with a registered Action
-							notification.addAction(NotificationAction.createSimple("Open Settings", () -> EventQueue.invokeLater(() ->
+							notification.addAction(NotificationAction.createSimple("Open settings", () -> EventQueue.invokeLater(() ->
 									new SettingsDialog(project, null, new PluginSettingsConfiguration(), false, true).show())));
 							notification.notify(project);
 						}
 						break;
 						case "Login not successful": {
-							new Notification(MoodleNotification.getGroupID(), "Login was not successful!", error.getCause().getMessage(), NotificationType.ERROR).notify(project);
+							NotificationGroupManager.getInstance().getNotificationGroup("Moodle")
+									.createNotification("Login was not successful!", error.getCause().getMessage(), NotificationType.ERROR)
+									.notify(project);
 						}
 						break;
 					}
