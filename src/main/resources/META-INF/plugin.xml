@@ -5,15 +5,15 @@
     <vendor email="moodle@profiluefter.me" url="https://github.com/profiluefter">Profiluefter</vendor>
 
     <description><![CDATA[
-    Plugin that enables you to interact with a moodle course using any JetBrains IDE.
-    WIP and currently only supports read access.
-    ]]></description>
+        Plugin that enables you to interact with a moodle course using any JetBrains IDE.
+        WIP and currently only supports read access.
+        ]]></description>
 
     <change-notes><![CDATA[
     Update plugin to replace deprecated methods
     ]]></change-notes>
 
-    <idea-version since-build="191"/>
+    <idea-version since-build="212"/>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
